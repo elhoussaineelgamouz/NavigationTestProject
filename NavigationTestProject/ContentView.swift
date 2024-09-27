@@ -8,17 +8,39 @@
 import SwiftUI
 
 struct ContentView: View {
+    //@State private var selection: Int = 2
+    @EnvironmentObject var stateManager: StateManger
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            TabView(selection: $stateManager.selection) {
+                FirstTab()
+                    .tabItem { Text("First") }
+                    .tag(1)
+                SecondTab()
+                    .tabItem { Text("Second") }
+                    .tag(2)
+            }
+        } else {
+            NavigationView {
+                List {
+                    NavigationLink(
+                        "First",
+                        destination: FirstBodyView(),
+                        tag: 1,
+                        selection: $stateManager.selectedListItem)
+
+                    NavigationLink(
+                        "second",
+                        destination: SecondTab(),
+                        tag: 2,
+                        selection: $stateManager.selectedListItem)
+                }
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(StateManger())
 }
